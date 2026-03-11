@@ -1,6 +1,7 @@
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
+import { HealthCheck } from "../models/healthcheck.modes.js"
 
 
 const healthcheck = asyncHandler(async (req, res) => {
