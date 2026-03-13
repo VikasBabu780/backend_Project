@@ -4,7 +4,7 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const commentSchema = new Schema(
     {
-        commment : {
+        comment : {
             type : String,
             required : true
         },

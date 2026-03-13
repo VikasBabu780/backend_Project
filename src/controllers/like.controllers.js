@@ -5,24 +5,135 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
-    const {videoId} = req.params
-    //TODO: toggle like on video
+
+    const { videoId } = req.params
+
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid video id")
+    }
+
+    const existingLike = await Like.findOne({
+        video: videoId,
+        likedBy: req.user._id
+    })
+
+    // if already liked -> remove like
+    if (existingLike) {
+
+        await Like.findByIdAndDelete(existingLike._id)
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Video unliked"))
+
+    }
+
+    // if not liked -> create like
+    const like = await Like.create({
+        video: videoId,
+        likedBy: req.user._id
+    })
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, like, "Video liked"))
+
 })
+
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
-    const {commentId} = req.params
-    //TODO: toggle like on comment
+
+    const { commentId } = req.params
+
+    // check valid id
+    if (!isValidObjectId(commentId)) {
+        throw new ApiError(400, "Invalid comment id")
+    }
+
+    // check existing like
+    const existingLike = await Like.findOne({
+        comment: commentId,
+        likedBy: req.user._id
+    })
+
+    // if already liked -> remove like
+    if (existingLike) {
+
+        await Like.findByIdAndDelete(existingLike._id)
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Comment unliked"))
+
+    }
+
+    // if not liked -> create like
+    const like = await Like.create({
+        comment: commentId,
+        likedBy: req.user._id
+    })
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, like, "Comment liked"))
 
 })
 
+
 const toggleTweetLike = asyncHandler(async (req, res) => {
-    const {tweetId} = req.params
-    //TODO: toggle like on tweet
-}
-)
+
+    const { tweetId } = req.params
+
+    // check valid id
+    if (!isValidObjectId(tweetId)) {
+        throw new ApiError(400, "Invalid tweet id")
+    }
+
+    // check existing like
+    const existingLike = await Like.findOne({
+        tweet: tweetId,
+        likedBy: req.user._id
+    })
+
+    // if already liked -> remove like
+    if (existingLike) {
+
+        await Like.findByIdAndDelete(existingLike._id)
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Tweet unliked"))
+    }
+
+    // if not liked -> create like
+    const like = await Like.create({
+        tweet: tweetId,
+        likedBy: req.user._id
+    })
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, like, "Tweet liked"))
+
+})
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-    //TODO: get all liked videos
+
+    const likedVideos = await Like.find({
+        likedBy: req.user._id,
+        video: { $ne: null }
+    }).populate("video")
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            likedVideos,
+            "Liked videos fetched successfully"
+        )
+    )
+
 })
 
 export {
