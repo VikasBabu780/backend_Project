@@ -117,23 +117,35 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 
 const getVideoById = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-    // validate video id
-    if(!isValidObjectId(videoId)){
-        throw new ApiError(400,"Invalid Video Id")
-    }
+  const { videoId } = req.params
 
-    // Find video by id
-    const video = await Video.findById(videoId).populate("owner","username email")
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid Video Id")
+  }
 
-    if (!video) {
-        throw new ApiError(404, "Video not found");
-    }
+  //  Atomic increment — findByIdAndUpdate with $inc instead of fetch → modify → save
+  const video = await Video.findByIdAndUpdate(
+    videoId,
+    { $inc: { views: 1 } }, // atomic — no race condition
+    { new: true }           // return updated document
+  ).populate("owner", "username email avatar")
 
-    // return response
-    return res
-    .status(200)
-    .json(new ApiResponse(200,video,"Video recieved Successfully !"))
+  if (!video) {
+    throw new ApiError(404, "Video not found")
+  }
+
+  //  Add to watch history if user is logged in
+  if (req.user?._id) {
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $addToSet: { watchHistory: videoId } },
+      { new: true }
+    )
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, video, "Video received successfully")
+  )
 })
 
 
@@ -153,7 +165,7 @@ const updateVideo = asyncHandler(async (req, res) => {
         throw new ApiError(404,"Video not found")
     }
 
-    console.log(req.user)
+    // console.log(req.user)
     // check ownership
     if(video.owner.toString() !== req.user._id.toString()){
         throw new ApiError(403,"You are not allowed to update this video")

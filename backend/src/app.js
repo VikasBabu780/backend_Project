@@ -7,7 +7,7 @@ dotenv.config()
 const app = express()
 
 app.use(cors({
-    origin : process.env.CORS_ORIGIN,
+    origin : "http://localhost:5173",
     credentials : true
 }))
 
@@ -40,5 +40,18 @@ app.use("/api/v1/playlist", playlistRouter)
 app.use("/api/v1/dashboard", dashboardRouter)
 
 // http://localhost:8000/api/v1/users/register
+
+
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500
+  const message = err.message || "Something went wrong"
+
+  return res.status(statusCode).json({
+    statusCode,
+    message,
+    success: false,
+    errors: err.errors || []
+  })
+})
 
 export { app }

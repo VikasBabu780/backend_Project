@@ -72,46 +72,43 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
 // controller to return channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
-    const { subscriberId } = req.params
+  const { subscriberId } = req.params
 
-    if (!isValidObjectId(subscriberId)) {
-        throw new ApiError(400, "Invalid subscriber id")
+  if (!isValidObjectId(subscriberId)) {
+    throw new ApiError(400, "Invalid subscriber id")
+  }
+
+  const subscribedChannels = await Subscription.aggregate([
+    {
+      $match: {
+        subscriber: new mongoose.Types.ObjectId(subscriberId)
+      }
+    },
+    {
+      $lookup: {
+        from: "users",           //  must be lowercase plural
+        localField: "channel",
+        foreignField: "_id",
+        as: "channelDetails"
+      }
+    },
+    {
+      $unwind: "$channelDetails"
+    },
+    {
+      $project: {
+        _id: "$channelDetails._id",
+        username: "$channelDetails.username",
+        fullname: "$channelDetails.fullname",
+        avatar: "$channelDetails.avatar",
+        subscribersCount: 1
+      }
     }
+  ])
 
-    const subscribedChannels = await Subscription.aggregate([
-        {
-            $match: {
-                subscriber: new mongoose.Types.ObjectId(subscriberId)
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "channel",
-                foreignField: "_id",
-                as: "channelDetails"
-            }
-        },
-        {
-            $unwind: "$channelDetails"
-        },
-        {
-            $project: {
-                _id: "$channelDetails._id",
-                username: "$channelDetails.username",
-                fullname: "$channelDetails.fullname",
-                avatar: "$channelDetails.avatar"
-            }
-        }
-    ])
-
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            subscribedChannels,
-            "Subscribed channels fetched successfully"
-        )
-    )
+  return res.status(200).json(
+    new ApiResponse(200, subscribedChannels, "Subscribed channels fetched successfully")
+  )
 })
 
 export {
