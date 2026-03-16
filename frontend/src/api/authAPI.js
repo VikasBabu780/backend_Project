@@ -7,9 +7,14 @@ export const registerUser = async (formData) => {
   return res.data.data; //  returns created user
 };
 
-export const login = async (credentials) => {
-  const res = await apiClient.post("/auth/login", credentials);
-  localStorage.setItem("accessToken", res.data.data.accessToken); // adjust path
+export const loginUser = async (userData) => {
+  const res = await apiClient.post("/users/login", userData);
+  const { user, accessToken, refreshToken } = res.data.data;
+
+  localStorage.setItem("accessToken", accessToken);
+  localStorage.setItem("refreshToken", refreshToken); // optional, if not httpOnly cookie
+
+  return { user, accessToken, refreshToken };
 };
 
 export const logoutUser = async () => {
