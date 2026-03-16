@@ -5,16 +5,24 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
-//  This interceptor re-throws errors with the backend message attached
+// Attach token to every request
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Re-throw errors with backend message
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Extract exact message from your ApiError response
     const message =
       error.response?.data?.message || error.message || "Something went wrong";
-    error.message = message; //  overwrite so catch blocks can use err.message directly
+    error.message = message;
     return Promise.reject(error);
-  },
+  }
 );
 
 export default apiClient;

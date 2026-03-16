@@ -7,9 +7,9 @@ export const registerUser = async (formData) => {
   return res.data.data; //  returns created user
 };
 
-export const loginUser = async (userData) => {
-  const res = await apiClient.post("/users/login", userData);
-  return res.data.data; // returns { user, accessToken, refreshToken }
+export const login = async (credentials) => {
+  const res = await apiClient.post("/auth/login", credentials);
+  localStorage.setItem("accessToken", res.data.data.accessToken); // adjust path
 };
 
 export const logoutUser = async () => {
