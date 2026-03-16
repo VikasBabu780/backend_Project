@@ -198,7 +198,7 @@ const Register = () => {
                   name="fullname"
                   value={formData.fullname}
                   onChange={handleChange}
-                  placeholder="John Doe"
+                  placeholder="Vikas Babu"
                   className="bg-[#121212] border border-[#303030] text-white rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#1c62b9] transition placeholder-[#555]"
                 />
               </div>
@@ -209,7 +209,7 @@ const Register = () => {
                   name="username"
                   value={formData.username}
                   onChange={handleChange}
-                  placeholder="johndoe"
+                  placeholder="babuvikas"
                   className="bg-[#121212] border border-[#303030] text-white rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#1c62b9] transition placeholder-[#555]"
                 />
               </div>
@@ -222,7 +222,7 @@ const Register = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="john@example.com"
+                placeholder="vikas@gmail.com"
                 className="bg-[#121212] border border-[#303030] text-white rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#1c62b9] transition placeholder-[#555]"
               />
             </div>
