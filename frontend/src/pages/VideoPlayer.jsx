@@ -5,7 +5,7 @@ import { getVideoById, getAllVideos } from "../api/videoAPI";
 import { toggleVideoLike, getLikedVideos } from "../api/likeAPI";
 import { toggleSubscription } from "../api/subscriptionAPI";
 import { getUserChannelProfile } from "../api/authAPI";
-import CommentSection from "../components/comments/CommentSection";
+import CommentSection from "../components/comments/commentSection";
 import PlaylistModal from "../components/playlist/PlaylistModal";
 import toast from "react-hot-toast";
 
