@@ -6,7 +6,7 @@ import {
   createTweet,
   updateTweet,
   deleteTweet,
-} from "../../api/tweetAPI";
+} from "../../api/tweetApi";
 import { toggleTweetLike } from "../../api/likeAPI";
 import toast from "react-hot-toast";
 

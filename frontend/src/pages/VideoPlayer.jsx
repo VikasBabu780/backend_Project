@@ -6,7 +6,7 @@ import { toggleVideoLike, getLikedVideos } from "../api/likeAPI";
 import { toggleSubscription } from "../api/subscriptionAPI";
 import { getUserChannelProfile } from "../api/authAPI";
 import CommentSection from "../components/comments/CommentSection";
-import PlaylistModal from "../components/playlist/PlaylistModal";
+import PlaylistModal from "../components/playList/PlaylistModal";
 import toast from "react-hot-toast";
 
 const formatViews = (v) => {
